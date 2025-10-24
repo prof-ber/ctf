@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "http": "^0.0.1-security",
+    "mysql2": "^3.15.3",
+    "path": "^0.12.7",
+    "socketio": "^1.0.0"
+  }
+}
