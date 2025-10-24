@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat WebSocket Vulnerável</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .chat-box {
+        border: 1px solid #ccc;
+        height: 300px;
+        overflow-y: scroll;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .message {
+        margin-bottom: 5px;
+        padding: 5px;
+        background: #f0f0f0;
+      }
+      .message .user {
+        font-weight: bold;
+        color: #333;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 200px;
+        padding: 5px;
+        margin: 5px;
+      }
+      button {
+        padding: 5px 10px;
+        margin: 5px;
+      }
+      .section {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chat WebSocket Vulnerável</h1>
+
+      <div class="section">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Usuário" />
+        <input type="password" id="password" placeholder="Senha" />
+        <button onclick="login()">Login</button>
+        <div id="login-result"></div>
+      </div>
+
+      <div class="section">
+        <h2>Buscar Mensagens</h2>
+        <input type="text" id="search" placeholder="Buscar nas mensagens..." />
+        <button onclick="searchMessages()">Buscar</button>
+        <div id="search-results"></div>
+      </div>
+
+      <div class="section">
+        <h2>Chat em Tempo Real</h2>
+        <div id="chat-messages" class="chat-box"></div>
+        <input
+          type="text"
+          id="message-input"
+          placeholder="Digite sua mensagem..."
+        />
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
+
+      <div class="section">
+        <h2>Área Administrativa</h2>
+        <input type="password" id="secret" placeholder="Senha administrativa" />
+        <button onclick="getFlag()">Obter Flag</button>
+        <div id="flag-result"></div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      socket.on("chat message", (data) => {
+        const chatBox = document.getElementById("chat-messages");
+        chatBox.innerHTML += `<div class="message"><span class="user">${data.username}:</span> ${data.message} <small>${data.timestamp}</small></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("login-result").innerHTML = data.success
+              ? `Login bem-sucedido! Bem-vindo, ${data.user.username}`
+              : `Falha no login: ${data.message}`;
+          });
+      }
+
+      function searchMessages() {
+        const search = document.getElementById("search").value;
+
+        fetch(`/api/messages?search=${encodeURIComponent(search)}`)
+          .then((res) => res.json())
+          .then((messages) => {
+            let html = "<h3>Resultados:</h3>";
+            messages.forEach((msg) => {
+              html += `<div class="message"><strong>${msg.username}:</strong> ${msg.message}</div>`;
+            });
+            document.getElementById("search-results").innerHTML = html;
+          });
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("message-input");
+        const message = input.value;
+
+        if (message.trim()) {
+          socket.emit("chat message", { message });
+          input.value = "";
+        }
+      }
+
+      function getFlag() {
+        const secret = document.getElementById("secret").value;
+
+        fetch("/api/getFlag", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ secret }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("flag-result").innerHTML = data.flag
+              ? `Flag: ${data.flag}`
+              : `Erro: ${data.error}`;
+          });
+      }
+    </script>
+  </body>
+</html>
