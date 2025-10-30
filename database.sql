@@ -28,8 +28,8 @@ CREATE TABLE flags (
 
 -- Inserir dados iniciais
 INSERT INTO users (username, password) VALUES 
-('admin', 'admin123'),
 ('usuario1', 'senha123'),
+('admin', 'password')
 ('teste', 'teste123');
 
 INSERT INTO messages (user_id, message) VALUES 
@@ -39,4 +39,4 @@ INSERT INTO messages (user_id, message) VALUES
 
 -- NÃO MODIFICAR :)
 INSERT INTO flags (flag_name, flag_value) VALUES 
-('main_flag', 'Sapo Verde');
+('main_flag', 'Gato Laranja');
