@@ -168,14 +168,14 @@ app.get('/api/messages', (req, res) => {
   let query = `SELECT m.message, u.username FROM messages m JOIN users u ON m.user_id = u.id`;
 
   if (search) {
-    query += ` WHERE m.message LIKE '%${search}%'`;
+    query += ` WHERE m.message LIKE ?`;
   }
 
   query += ` ORDER BY m.created_at DESC LIMIT 50`;
 
   console.log('Query mensagens:', query);
 
-  db.query(query, (err, results) => {
+  db.query(query, [search], (err, results) => {
     if (err) {
       return res.status(500).json({ error: 'Erro no banco de dados' });
     }
