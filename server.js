@@ -212,9 +212,11 @@ io.on('connection', (socket) => {
         return;
       }
 
+      const sanitizedMessage = String(data.message || '').replace(/[&<>"']/g, '');
+      
       io.emit('chat message', {
         username: 'Usuário',
-        message: data.message,
+        message: sanitizedMessage,
         timestamp: new Date().toLocaleTimeString(),
       });
     });
