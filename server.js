@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const secret =
   'o43flwbgol4ehpvn3uisenb4hqgboionbkuw45o43flbquigbqol3i4fbvgqu3ybvqluwv';
-
+const main_flag_secret = 'o32n0392fnr3un02jd302hfhun3ifo202joneond039n';
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -186,7 +186,7 @@ app.get('/api/messages', (req, res) => {
 app.post('/api/getFlag', (req, res) => {
   const { secret } = req.body;
 
-  if (secret === 'admin123') {
+  if (secret === main_flag_secret) {
     const query = `SELECT * FROM flags WHERE flag_name = 'main_flag'`;
 
     db.query(query, (err, results) => {
