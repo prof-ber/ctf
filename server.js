@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const secret =
+  'o43flwbgol4ehpvn3uisenb4hqgboionbkuw45o43flbquigbqol3i4fbvgqu3ybvqluwv';
 
 const app = express();
 const server = http.createServer(app);
@@ -100,8 +102,8 @@ app.post('/api/login-jwt', (req, res) => {
           username: user.username,
           admin: user.username === 'admin',
         },
-        null,
-        { algorithm: 'none' }
+        secret,
+        { algorithm: 'HS256' }
       );
 
       res.json({
@@ -123,7 +125,7 @@ app.get('/api/admin-data', (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, null, { algorithms: ['HS256'] });
+    const decoded = jwt.verify(token, secret, { algorithms: ['HS256'] });
 
     if (decoded.admin) {
       const query = `SELECT * FROM flags`;
