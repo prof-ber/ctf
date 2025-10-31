@@ -63,10 +63,10 @@ app.get('/api/profile', (req, res) => {
   if (req.cookies && req.cookies.userProfile) {
     try {
       const profileData = JSON.parse(req.cookies.userProfile);
-      const query = `SELECT * FROM users WHERE username = '${profileData.username}'`;
+      const query = `SELECT * FROM users WHERE username = ?`;
       console.log('Profile SQLi Query:', query);
 
-      db.query(query, (err, results) => {
+      db.query(query, [profileData.username], (err, results) => {
         if (err) {
           return res.status(500).json({ error: 'Erro no banco de dados' });
         }
