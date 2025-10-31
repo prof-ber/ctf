@@ -29,7 +29,7 @@ CREATE TABLE flags (
 -- Inserir dados iniciais
 INSERT INTO users (username, password) VALUES 
 ('usuario1', 'senha123'),
-('admin', 'password')
+('admin', 'password'),
 ('teste', 'teste123');
 
 INSERT INTO messages (user_id, message) VALUES 
