@@ -163,7 +163,7 @@ app.post('/api/login', (req, res) => {
 });
 
 app.get('/api/messages', (req, res) => {
-  const search = req.query.search || '';
+  const search = req.query.search || '%';
 
   let query = `SELECT m.message, u.username FROM messages m JOIN users u ON m.user_id = u.id`;
 
@@ -212,8 +212,11 @@ io.on('connection', (socket) => {
         return;
       }
 
-      const sanitizedMessage = String(data.message || '').replace(/[&<>"']/g, '');
-      
+      const sanitizedMessage = String(data.message || '').replace(
+        /[&<>"']/g,
+        ''
+      );
+
       io.emit('chat message', {
         username: 'Usuário',
         message: sanitizedMessage,
