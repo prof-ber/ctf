@@ -146,10 +146,10 @@ app.get('/api/admin-data', (req, res) => {
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+  const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
 
   console.log('Query executada:', query);
-  db.query(query, (err, results) => {
+  db.query(query, [username, password], (err, results) => {
     if (err) {
       return res.status(500).json({ error: 'Erro no banco de dados' });
     }
