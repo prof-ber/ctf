@@ -123,7 +123,7 @@ app.get('/api/admin-data', (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, null, { algorithms: ['none', 'HS256'] });
+    const decoded = jwt.verify(token, null, { algorithms: ['HS256'] });
 
     if (decoded.admin) {
       const query = `SELECT * FROM flags`;
