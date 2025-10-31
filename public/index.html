@@ -82,6 +82,27 @@
         <button onclick="getFlag()">GOSTOSURAS OU TRAVESSURAS</button>
         <div id="flag-result"></div>
       </div>
+
+      <div class="section">
+        <h2>🍪Perfil por Cookie🧁</h2>
+        <input
+          type="text"
+          id="cookie-username"
+          placeholder="Username para cookie"
+        />
+        <button onclick="setProfileCookie()">Definir Cookie</button>
+        <button onclick="getProfile()">Buscar Perfil</button>
+        <div id="cookie-result"></div>
+      </div>
+
+      <div class="section">
+        <h2>👻Login com JWT👻</h2>
+        <input type="text" id="jwt-username" placeholder="Usuário JWT" />
+        <input type="password" id="jwt-password" placeholder="Senha JWT" />
+        <button onclick="loginJWT()">Login JWT</button>
+        <button onclick="getAdminData()">Dados Admin</button>
+        <div id="jwt-result"></div>
+      </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -148,6 +169,77 @@
             document.getElementById("flag-result").innerHTML = data.flag
               ? `Flag: ${data.flag}`
               : `Erro: ${data.error}`;
+          });
+      }
+
+      function setProfileCookie() {
+        const username = document.getElementById("cookie-username").value;
+        const userData = { username: username };
+        document.cookie = `userProfile=${JSON.stringify(userData)}; path=/`;
+        document.getElementById("cookie-result").innerHTML = "Cookie definido!";
+      }
+
+      function getProfile() {
+        fetch("/api/profile")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("cookie-result").innerHTML = data.profile
+              ? `Perfil: ${JSON.stringify(data.profile)}`
+              : `Erro: ${data.error}`;
+          });
+      }
+
+      function loginJWT() {
+        const username = document.getElementById("jwt-username").value;
+        const password = document.getElementById("jwt-password").value;
+
+        fetch("/api/login-jwt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              localStorage.setItem("jwtToken", data.token);
+              document.getElementById(
+                "jwt-result"
+              ).innerHTML = `Login JWT bem-sucedido! Token salvo. Admin: ${
+                data.user.username === "admin"
+              }`;
+            } else {
+              document.getElementById(
+                "jwt-result"
+              ).innerHTML = `Falha no login JWT: ${data.message}`;
+            }
+          });
+      }
+
+      function getAdminData() {
+        const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+          document.getElementById("jwt-result").innerHTML =
+            "Faça login JWT primeiro!";
+          return;
+        }
+
+        fetch("/api/admin-data", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.flags) {
+              document.getElementById(
+                "jwt-result"
+              ).innerHTML = `Dados admin: ${JSON.stringify(data.flags)}`;
+            } else {
+              document.getElementById(
+                "jwt-result"
+              ).innerHTML = `Erro: ${data.error}`;
+            }
           });
       }
     </script>

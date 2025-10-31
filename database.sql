@@ -39,4 +39,8 @@ INSERT INTO messages (user_id, message) VALUES
 
 -- NÃO MODIFICAR :)
 INSERT INTO flags (flag_name, flag_value) VALUES 
-('main_flag', 'Gato Laranja');
+('main_flag', 'Um gato chamado Flauros'),
+('backup_flag', 'Uma coruja chamada Stolas'),
+('secret_flag', 'Uma calopsita chamada Andras'),
+('hidden_flag', 'Um papagaio chamado Phenex'),
+('extra_flag', 'Um gato chamado Buer');
